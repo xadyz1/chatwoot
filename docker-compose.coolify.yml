@@ -1,0 +1,182 @@
+services:
+  chatwoot:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        BUNDLE_WITHOUT: "development:test"
+        RAILS_ENV: production
+        RAILS_SERVE_STATIC_FILES: "true"
+        NODE_OPTIONS: "--max-old-space-size=2048"
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    environment:
+      SERVICE_URL_CHATWOOT_3000: ${SERVICE_URL_CHATWOOT_3000}
+      SECRET_KEY_BASE: ${SERVICE_PASSWORD_CHATWOOT}
+      FRONTEND_URL: ${SERVICE_URL_CHATWOOT}
+      DEFAULT_LOCALE: ${CHATWOOT_DEFAULT_LOCALE:-pt_PT}
+      FORCE_SSL: ${FORCE_SSL:-false}
+      ENABLE_ACCOUNT_SIGNUP: ${ENABLE_ACCOUNT_SIGNUP:-false}
+
+      POSTGRES_DATABASE: ${POSTGRES_DB:-chatwoot}
+      POSTGRES_HOST: postgres
+      POSTGRES_USERNAME: ${SERVICE_USER_POSTGRES}
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_POSTGRES}
+
+      REDIS_URL: redis://default:${SERVICE_PASSWORD_REDIS}@redis:6379
+      REDIS_PASSWORD: ${SERVICE_PASSWORD_REDIS}
+      REDIS_OPENSSL_VERIFY_MODE: ${REDIS_OPENSSL_VERIFY_MODE:-none}
+
+      RAILS_MAX_THREADS: ${RAILS_MAX_THREADS:-5}
+      RAILS_ENV: production
+      NODE_ENV: production
+      INSTALLATION_ENV: docker
+      RAILS_SERVE_STATIC_FILES: "true"
+      RAILS_LOG_TO_STDOUT: "true"
+
+      MAILER_SENDER_EMAIL: ${CHATWOOT_MAILER_SENDER_EMAIL}
+      SMTP_ADDRESS: ${CHATWOOT_SMTP_ADDRESS}
+      SMTP_AUTHENTICATION: ${CHATWOOT_SMTP_AUTHENTICATION:-plain}
+      SMTP_DOMAIN: ${CHATWOOT_SMTP_DOMAIN}
+      SMTP_ENABLE_STARTTLS_AUTO: ${CHATWOOT_SMTP_ENABLE_STARTTLS_AUTO:-true}
+      SMTP_PORT: ${CHATWOOT_SMTP_PORT:-587}
+      SMTP_USERNAME: ${CHATWOOT_SMTP_USERNAME}
+      SMTP_PASSWORD: ${CHATWOOT_SMTP_PASSWORD}
+
+      ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
+      SAFE_FETCH_ALLOW_PRIVATE_NETWORK: ${SAFE_FETCH_ALLOW_PRIVATE_NETWORK:-false}
+
+      INSTALLATION_NAME: SwiftChat
+      BRAND_NAME: SwiftChat
+      BRAND_URL: https://swiftapps.cloud
+
+    entrypoint: docker/entrypoints/rails.sh
+    command: >
+      sh -c "bundle exec rails db:chatwoot_prepare &&
+      bundle exec rails s -p 3000 -b 0.0.0.0"
+
+    volumes:
+      - rails-data:/app/storage
+
+    expose:
+      - "3000"
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000"]
+      interval: 15s
+      timeout: 20s
+      retries: 20
+      start_period: 90s
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        BUNDLE_WITHOUT: "development:test"
+        RAILS_ENV: production
+        RAILS_SERVE_STATIC_FILES: "true"
+        NODE_OPTIONS: "--max-old-space-size=2048"
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    environment:
+      SECRET_KEY_BASE: ${SERVICE_PASSWORD_CHATWOOT}
+      FRONTEND_URL: ${SERVICE_URL_CHATWOOT}
+      DEFAULT_LOCALE: ${CHATWOOT_DEFAULT_LOCALE:-pt_PT}
+
+      POSTGRES_DATABASE: ${POSTGRES_DB:-chatwoot}
+      POSTGRES_HOST: postgres
+      POSTGRES_USERNAME: ${SERVICE_USER_POSTGRES}
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_POSTGRES}
+
+      REDIS_URL: redis://default:${SERVICE_PASSWORD_REDIS}@redis:6379
+      REDIS_PASSWORD: ${SERVICE_PASSWORD_REDIS}
+      REDIS_OPENSSL_VERIFY_MODE: ${REDIS_OPENSSL_VERIFY_MODE:-none}
+
+      RAILS_ENV: production
+      NODE_ENV: production
+      INSTALLATION_ENV: docker
+      RAILS_LOG_TO_STDOUT: "true"
+
+      MAILER_SENDER_EMAIL: ${CHATWOOT_MAILER_SENDER_EMAIL}
+      SMTP_ADDRESS: ${CHATWOOT_SMTP_ADDRESS}
+      SMTP_AUTHENTICATION: ${CHATWOOT_SMTP_AUTHENTICATION:-plain}
+      SMTP_DOMAIN: ${CHATWOOT_SMTP_DOMAIN}
+      SMTP_ENABLE_STARTTLS_AUTO: ${CHATWOOT_SMTP_ENABLE_STARTTLS_AUTO:-true}
+      SMTP_PORT: ${CHATWOOT_SMTP_PORT:-587}
+      SMTP_USERNAME: ${CHATWOOT_SMTP_USERNAME}
+      SMTP_PASSWORD: ${CHATWOOT_SMTP_PASSWORD}
+
+      ACTIVE_STORAGE_SERVICE: ${ACTIVE_STORAGE_SERVICE:-local}
+
+      INSTALLATION_NAME: SwiftChat
+      BRAND_NAME: SwiftChat
+      BRAND_URL: https://swiftapps.cloud
+
+    command:
+      - bundle
+      - exec
+      - sidekiq
+      - "-C"
+      - config/sidekiq.yml
+
+    volumes:
+      - rails-data:/app/storage
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-chatwoot}
+      POSTGRES_USER: ${SERVICE_USER_POSTGRES}
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_POSTGRES}
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -h 127.0.0.1"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+    command:
+      - sh
+      - "-c"
+      - 'redis-server --appendonly yes --requirepass "$$SERVICE_PASSWORD_REDIS"'
+
+    environment:
+      SERVICE_PASSWORD_REDIS: ${SERVICE_PASSWORD_REDIS}
+
+    volumes:
+      - redis-data:/data
+
+    healthcheck:
+      test: ["CMD-SHELL", 'redis-cli -a "$$SERVICE_PASSWORD_REDIS" PING | grep PONG']
+      interval: 15s
+      timeout: 10s
+      retries: 15
+
+volumes:
+  rails-data:
+  postgres-data:
+  redis-data:
