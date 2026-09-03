@@ -3,9 +3,9 @@
 
 ___
 
-# Chatwoot
+# SwiftChat
 
-The modern customer support platform, an open-source alternative to Intercom, Zendesk, Salesforce Service Cloud etc.
+The modern customer support platform, an open-source alternative to Intercom, Zendesk, Salesforce Service Cloud etc. Powered by SwiftChat.
 
 <p>
   <img src="https://img.shields.io/circleci/build/github/chatwoot/chatwoot" alt="CircleCI Badge">
@@ -15,7 +15,7 @@ The modern customer support platform, an open-source alternative to Intercom, Ze
   <a title="Crowdin" target="_self" href="https://chatwoot.crowdin.com/chatwoot"><img src="https://badges.crowdin.net/e/37ced7eba411064bd792feb3b7a28b16/localized.svg"></a>
   <a href="https://discord.gg/cJXdrwS"><img src="https://img.shields.io/discord/647412545203994635" alt="Discord"></a>
   <a href="https://status.chatwoot.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchatwoot%2Fstatus%2Fmaster%2Fapi%2Fchatwoot%2Fuptime.json" alt="uptime"></a>
-  <a href="https://status.chatwoot.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchatwoot%2Fstatus%2Fmaster%2Fapi%2Fchatwoot%2Fresponse-time.json" alt="response time"></a>
+  <a href="https://status.chatwoot.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchatwoot%2Fstatus%2Fmaster%2Fapi%2Fchatwoot%2Fresponse-time.json" alt="response"></a>
   <a href="https://artifacthub.io/packages/helm/chatwoot/chatwoot"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/artifact-hub" alt="Artifact HUB"></a>
 </p>
 
@@ -34,15 +34,15 @@ The modern customer support platform, an open-source alternative to Intercom, Ze
 
 ---
 
-Chatwoot is the modern, open-source, and self-hosted customer support platform designed to help businesses deliver exceptional customer support experience. Built for scale and flexibility, Chatwoot gives you full control over your customer data while providing powerful tools to manage conversations across channels.
+SwiftChat is the modern, open-source, and self-hosted customer support platform designed to help businesses deliver exceptional customer support experience. Built for scale and flexibility, powered by SwiftChat.
 
 ### ✨ Captain – AI Agent for Support
 
-Supercharge your support with Captain, Chatwoot’s AI agent. Captain helps automate responses, handle common queries, and reduce agent workload—ensuring customers get instant, accurate answers. With Captain, your team can focus on complex conversations while routine questions are resolved automatically. Read more about Captain [here](https://chwt.app/captain-docs).
+Supercharge your support with Captain, SwiftChat's AI agent. Captain helps automate responses, handle common queries, and reduce agent workload—ensuring customers get instant, accurate answers.
 
 ### 💬 Omnichannel Support Desk
 
-Chatwoot centralizes all customer conversations into one powerful inbox, no matter where your customers reach out from. It supports live chat on your website, email, Facebook, Instagram, Twitter, WhatsApp, Telegram, Line, SMS etc.
+SwiftChat centralizes all customer conversations into one powerful inbox, no matter where your customers reach out from. It supports live chat on your website, email, Facebook, Instagram, Twitter, WhatsApp, SMS, and more.
 
 ### 📚 Help center portal
 
@@ -73,10 +73,10 @@ Publish help articles, FAQs, and guides through the built-in Help Center Portal.
 #### Integrations
 - Slack Integration to manage conversations directly from Slack.
 - Dialogflow Integration for chatbot automation.
-- Dashboard Apps to embed internal tools within Chatwoot.
-- Shopify Integration to view and manage customer orders right within Chatwoot.
+- Dashboard Apps to embed internal tools within SwiftChat.
+- Shopify Integration to view and manage customer orders right within SwiftChat.
 - Use Google Translate to translate messages from your customers in realtime.
-- Create and manage Linear tickets within Chatwoot.
+- Create and manage Linear tickets within SwiftChat.
 
 #### Reports & Insights
 - Live View of ongoing conversations for real-time monitoring.
@@ -91,7 +91,7 @@ Detailed documentation is available at [chatwoot.com/help-center](https://www.ch
 
 ## Translation process
 
-The translation process for Chatwoot web and mobile app is managed at [https://translate.chatwoot.com](https://translate.chatwoot.com) using Crowdin. Please read the [translation guide](https://www.chatwoot.com/docs/contributing/translating-chatwoot-to-your-language) for contributing to Chatwoot.
+The translation process for SwiftChat web and mobile app is managed at [https://translate.chatwoot.com](https://translate.chatwoot.com) using Crowdin. Please read the [translation guide](https://www.chatwoot.com/docs/translators).
 
 ## Branching model
 
@@ -102,16 +102,16 @@ If you are looking for a stable version, please use the `master` or tags labelle
 
 ### Heroku one-click deploy
 
-Deploying Chatwoot to Heroku is a breeze. It's as simple as clicking this button:
+Deploying SwiftChat to Heroku is a breeze. It's as simple as clicking this button:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/chatwoot/chatwoot/tree/master)
 
-Follow this [link](https://www.chatwoot.com/docs/environment-variables) to understand setting the correct environment variables for the app to work with all the features. There might be breakages if you do not set the relevant environment variables.
+Follow this [link](https://www.chatwoot.com/docs/environment-variables) to understand setting the correct environment variables for the app to work with all the features. There might be breakages with some features when setting incomplete environment variables.
 
 
 ### DigitalOcean 1-Click Kubernetes deployment
 
-Chatwoot now supports 1-Click deployment to DigitalOcean as a kubernetes app.
+SwiftChat now supports 1-Click deployment to DigitalOcean as a kubernetes app.
 
 <a href="https://marketplace.digitalocean.com/apps/chatwoot?refcode=f2238426a2a8" alt="Deploy to DigitalOcean">
   <img width="200" alt="Deploy to DO" src="https://www.deploytodo.com/do-btn-blue.svg"/>
@@ -136,4 +136,4 @@ Thanks goes to all these [wonderful people](https://www.chatwoot.com/docs/contri
 <a href="https://github.com/chatwoot/chatwoot/graphs/contributors"><img src="https://opencollective.com/chatwoot/contributors.svg?width=890&button=false" /></a>
 
 
-*Chatwoot* &copy; 2017-2026, Chatwoot Inc - Released under the MIT License.
+*SwiftChat* &copy; 2017-2026, Powered by SwiftChat - Released under the MIT License.
