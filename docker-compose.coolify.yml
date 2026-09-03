@@ -180,3 +180,12 @@ volumes:
   rails-data:
   postgres-data:
   redis-data:
+
+build:
+  context: .
+  dockerfile: ./docker/Dockerfile
+  args:
+    BUNDLE_WITHOUT: "development:test"
+    RAILS_ENV: production
+    RAILS_SERVE_STATIC_FILES: "true"
+    NODE_OPTIONS: "--max-old-space-size=2048"
