@@ -10,11 +10,14 @@ services:
         condition: service_healthy
 
     environment:
-      SERVICE_URL_CHATWOOT_3000: ${SERVICE_URL_CHATWOOT_3000}
       SECRET_KEY_BASE: ${SERVICE_PASSWORD_CHATWOOT}
-      FRONTEND_URL: ${SERVICE_URL_CHATWOOT_3000}
+
+      # URL pública da tua instância SwiftChat.
+      # Não usar "/" no final.
+      FRONTEND_URL: https://chat.swiftapps.cloud
+
       DEFAULT_LOCALE: ${CHATWOOT_DEFAULT_LOCALE:-pt_PT}
-      FORCE_SSL: ${FORCE_SSL:-false}
+      FORCE_SSL: ${FORCE_SSL:-true}
       ENABLE_ACCOUNT_SIGNUP: ${ENABLE_ACCOUNT_SIGNUP:-false}
 
       POSTGRES_DATABASE: ${POSTGRES_DB:-chatwoot}
@@ -52,8 +55,7 @@ services:
     entrypoint: docker/entrypoints/rails.sh
 
     command: >
-      sh -c "bundle exec rails db:chatwoot_prepare &&
-      bundle exec rails s -p 3000 -b 0.0.0.0"
+      sh -c "bundle exec rails db:chatwoot_prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
 
     volumes:
       - rails-data:/app/storage
@@ -62,7 +64,7 @@ services:
       - "3000"
 
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000"]
+      test: [ "CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000" ]
       interval: 15s
       timeout: 20s
       retries: 20
@@ -80,8 +82,13 @@ services:
 
     environment:
       SECRET_KEY_BASE: ${SERVICE_PASSWORD_CHATWOOT}
-      FRONTEND_URL: '${SERVICE_URL_CHATWOOT_3000}'
+
+      # Deve ser exatamente igual ao serviço chatwoot.
+      FRONTEND_URL: https://chat.swiftapps.cloud
+
       DEFAULT_LOCALE: ${CHATWOOT_DEFAULT_LOCALE:-pt_PT}
+      FORCE_SSL: ${FORCE_SSL:-true}
+      ENABLE_ACCOUNT_SIGNUP: ${ENABLE_ACCOUNT_SIGNUP:-false}
 
       POSTGRES_DATABASE: ${POSTGRES_DB:-chatwoot}
       POSTGRES_HOST: postgres
@@ -92,6 +99,7 @@ services:
       REDIS_PASSWORD: ${SERVICE_PASSWORD_REDIS}
       REDIS_OPENSSL_VERIFY_MODE: ${REDIS_OPENSSL_VERIFY_MODE:-none}
 
+      RAILS_MAX_THREADS: ${RAILS_MAX_THREADS:-5}
       RAILS_ENV: production
       NODE_ENV: production
       INSTALLATION_ENV: docker
@@ -135,7 +143,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -h 127.0.0.1"]
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -h 127.0.0.1" ]
       interval: 15s
       timeout: 10s
       retries: 15
@@ -156,7 +164,7 @@ services:
       - redis-data:/data
 
     healthcheck:
-      test: ["CMD-SHELL", 'redis-cli -a "$$SERVICE_PASSWORD_REDIS" PING | grep PONG']
+      test: [ "CMD-SHELL", 'redis-cli -a "$$SERVICE_PASSWORD_REDIS" PING | grep PONG' ]
       interval: 15s
       timeout: 10s
       retries: 15
